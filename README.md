@@ -1,4 +1,4 @@
-# freelance_engine_customized_worldpress
+# freelance_engine_customized_wordpress
 Add a bulletin post field in profile which will be displayed according to the language the post owner can speak
 
 This is a child theme
