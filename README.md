@@ -5,7 +5,7 @@ if the system language is the same as one of the languages the post author can s
 
 This is a child theme
 
-So you need to copy all the contents in freelance_engine_customized_wordpress fold to your wordpress/wp-content/themes/freelanceengine-child/ fold.
+So you need to copy all the contents in freelance_engine_customized_wordpress folder to your wordpress/wp-content/themes/freelanceengine-child/ folder.
 
 Also, you need to install the theme named 'freelance engine'
 
