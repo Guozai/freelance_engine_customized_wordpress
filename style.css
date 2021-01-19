@@ -1,0 +1,244 @@
+/*
+Theme Name:     Freelanceengine Globalized
+Theme URI:      http://lawandaction.com/
+Description:    Child theme for the FreelanceEngine Bulletin theme
+Author:         Yiping Guo
+Author URI:     http://lawandaction.com/about/
+Template:       freelanceengine
+Version:        1.0
+*/
+
+.freelance-bulletin-action{
+	position:relative
+}
+
+.fre-input-field.fre-bulletin-field input{
+ 	display:inline-block;
+ 	width:130px
+}
+.fre-input-field.fre-bulletin-field>span{
+	display:inline-block;
+	margin-left:20px;
+	font-size:16px;
+	color:#415161;
+	line-height:44px
+}
+
+.freelance-bulletin-title{
+ 	margin:0;
+ 	font-size:20px;
+ 	font-weight:600;
+ 	color:#2c3e50;
+ 	min-height:44px
+}
+
+@media (max-width:767px){
+	.freelance-bulletin-title{
+ 		min-height:auto
+ 	}
+}
+
+.freelance-bulletin-add{
+ 	float:right
+}
+.freelance-bulletin-add .fre-normal-btn-o{
+ 	min-width:110px
+}
+
+.freelance-bulletin-list{
+ 	margin:0;
+ 	padding:0
+}
+.freelance-bulletin-list>li{
+ 	list-style:none;
+ 	padding:26px 0;
+ 	border-bottom:1px solid #ededed
+}
+.freelance-bulletin-list>li:first-child{
+ 	padding-top:0
+}
+.freelance-bulletin-list>li:last-child{
+ 	border:none;
+ 	padding-bottom:0
+}
+
+.freelance-bulletin-wrap>h2{
+ 	margin:0;
+ 	font-size:16px;
+ 	font-weight:600;
+ 	color:#2c3e50;
+ 	line-height:1.5em
+}
+.freelance-bulletin-wrap>h3{
+	margin:10px 0 0;
+	font-size:16px;
+	font-weight:600;
+	color:#2c3e50;
+	line-height:1.5em
+}
+.freelance-bulletin-wrap>h4{
+	margin:10px 0 0;
+	font-size:16px;
+	font-weight:400;
+	color:#2c3e50;
+	line-height:1.5em
+}
+.freelance-bulletin-wrap>p{
+	font-size:16px;
+	color:#415161;
+	line-height:1.8em;
+	margin:14px 0 0
+}
+
+.freelance-bulletin-action{
+	margin-top:15px
+}
+.freelance-bulletin-action a{
+	display:inline-block;
+	margin-right:30px;
+	font-size:16px;
+	color:#1fbdbd
+}
+.freelance-bulletin-action a i{
+	margin-right:6px
+}
+
+.freelance-bulletin-loadmore{
+	margin-left:-40px;
+	margin-right:-40px;
+	margin-top:30px;
+	margin-bottom:-4px;
+	padding-left:40px;
+	padding-right:40px;
+	padding-top:30px;
+	border-top:1px solid #ededed;
+	text-align:center
+}
+.freelance-bulletin-loadmore a{
+	font-size:16px;
+	font-weight:600;
+	color:#1fbdbd;
+	line-height:1em
+}
+
+.freelance-bulletin-new-wrap{
+	display:none
+}
+.freelance-bulletin-new-wrap.active{
+	display:block
+}
+.freelance-bulletin-new{
+	padding-right:340px
+}
+
+.fre-bulletin-form .fre-input-field{
+	margin:0 0 20px
+}
+.fre-bulletin-form .fre-input-field .fre-field-title{
+	margin-top:6px
+}
+.fre-bulletin-form .fre-input-field textarea{
+	margin-top:6px
+}
+.fre-bulletin-form .fre-form-btn{
+	margin:26px 0 4px
+}
+.fre-bulletin-form .fre-normal-btn,.fre-bulletin-form .fre-normal-btn-disable{
+	min-width:110px
+}
+
+.fre-bulletin-close{
+	font-size:14px;
+	font-weight:700;
+	color:#666f78;
+	margin-left:24px;
+	cursor:pointer
+}
+
+.author-freelance-wrap .freelance-bulletin-title{
+	margin-bottom:18px
+}
+
+@media (max-width:991px){
+ .freelance-bulletin-new{
+	 padding-right:0
+ }
+ .freelance-bulletin-loadmore{
+	 margin-left:-30px;
+	 margin-right:-30px;
+   margin-top:30px;
+	 margin-bottom:0;
+	 padding-left:30px;
+	 padding-right:30px;
+	 padding-bottom:4px
+ }
+}
+
+@media (max-width: 767px) {
+	.freelance-bulletin-new{
+		padding-right:0
+	}
+
+	.freelance-bulletin-add{
+		float:none;
+		margin-top:34px
+	}
+
+	.freelance-bulletin-add .fre-normal-btn-o{
+		width:100%
+	}
+
+	.freelance-bulletin-list>li:first-child{
+		padding-top:30px
+	}
+
+	.fre-bulletin-form .fre-form-btn{
+		text-align:center
+	}
+	.fre-bulletin-form .fre-form-btn .fre-normal-btn,.fre-bulletin-form .fre-form-btn .fre-normal-btn-disable{
+		width:100%
+	}
+
+	.fre-bulletin-close{
+		display:inline-block;
+		margin:15px 0 0
+	}
+
+	.freelance-bulletin-loadmore{
+		margin-left:-15px;
+		margin-right:-15px;
+		margin-top:30px;
+		margin-bottom:-14px;
+		padding-top:16px;
+		padding-left:15px;
+		padding-right:15px;
+		padding-bottom:0
+	}
+}
+
+.fre-bulletin-list{
+	margin: 0;
+    padding: 0;
+    list-style-type: none
+}
+
+.fre-bulletin-list>li:last-child .bulletin-list-wrap {
+    border: none
+}
+
+.bulletin-list-wrap{
+	position: relative;
+    padding-top: 40px;
+    padding-bottom: 26px;
+    border-bottom: 1px solid #ededed
+}
+
+.bulletin-content-wrap{
+	position: relative;
+	padding-top: 40px;
+    padding-bottom: 40px;
+	border-bottom: 1px solid #ededed;
+	display:none
+}
+
+/* styles for multi select dropdown */
