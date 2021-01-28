@@ -44,6 +44,8 @@ $display_name   = $user_data->display_name;
 $user_available = isset( $user_data->user_available ) && $user_data->user_available == "on" ? 'checked' : '';
 $country        = isset( $profile->tax_input['country'][0] ) ? $profile->tax_input['country'][0]->name : '';
 $category       = isset( $profile->tax_input['project_category'][0] ) ? $profile->tax_input['project_category'][0]->slug : '';
+$languages_selected      = isset( $profile->languages ) ? $profile->languages : '';
+
 /*if ( $profile_id ) {
 	$nations = $wpdb->get_results( "SELECT nation FROM wp_user_nationalities" );
 	if ( sizeof($nations) === 0 ) {
@@ -312,6 +314,48 @@ $currency = ae_get_option( 'currency', array(
 										);
 										?>
                                     </div>
+									
+									<div class="fre-input-field">
+										<?php
+										$results = $wpdb->get_results( "SELECT term_id FROM " . $wpdb->term_taxonomy . " WHERE taxonomy = 'post_language'" );
+
+										$i = 0;
+										foreach ($results as $language_term_id) {
+											$language_arr[$i] = $wpdb->get_var( "SELECT name FROM " . $wpdb->terms . " WHERE term_id = " . $language_term_id->term_id );
+											$i++;
+										}
+
+										$validate_language = 0;
+										if ( fre_share_role() || $user_role == FREELANCER ) {
+											$validate_language = 1;
+										}
+
+                                        // only display language dropdown for lawyers (not clients)
+                                        if ( fre_share_role() || $user_role == FREELANCER ) {
+										?>
+
+                                        <select name='languages' class='multi-select-dropdown' data-validate_filed = '<?php echo $validate_language ?>' multiple='multiple'>
+												<?php
+                                                echo ("<option value='' disabled>Choose Languages You Speak</option>");
+                                                $isSelected = false;
+        										foreach($language_arr as $language){
+                                                    if ( !empty($languages_selected) ) {
+                                                        foreach($languages_selected as $selected) {
+                                                            if ($selected === strtolower($language)) {
+                                                                $isSelected = true;
+                                                                echo ("<option value='" . strtolower($language) ."' selected>$language</option>");
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                    if ( !$isSelected )
+                                                        echo ("<option value='" . strtolower($language) . "'>$language</option>");
+                                                    $isSelected = false;
+                                                }
+        										?>
+        								</select>
+                                        <?php } ?>
+									</div>
 
 									<?php if ( fre_share_role() || $user_role == FREELANCER ) { ?>
                                         <div class="fre-input-field fre-experience-field">

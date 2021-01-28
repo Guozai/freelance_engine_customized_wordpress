@@ -23,7 +23,6 @@ function freelanceengine_child_scripts() {
 
 	wp_enqueue_script( 'bulletins' );
 }
-
 add_action( 'wp_enqueue_scripts', 'freelanceengine_child_scripts', 100 );
 
 function freelanceengine_child_styles() {
@@ -35,8 +34,12 @@ function freelanceengine_child_styles() {
 	// enqueue child styles
 	wp_enqueue_style('main-style' );	
 }
-
 add_action( 'wp_enqueue_styles', 'freelanceengine_child_styles', 100 );
+
+// get environment language of the system
+function get_env_language() {
+	return strval(substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2));
+}
 
 // function get page id by name
 function get_page_id($page_name) {
@@ -45,7 +48,165 @@ function get_page_id($page_name) {
 	return $page_id;
 }
 
-// function to save all profile data to the databases including 'bulletin posts'
+// insert taxonomy post language
+function insert_post_language_taxonomy() {
+	$taxs = array (
+		'0' => array(
+			'name'	=> 'English',
+			'slug'	=> 'en',
+		),
+		'1' => array(
+			'name'	=> 'Korean',
+			'slug'	=> 'ko',
+		),
+		'2' => array(
+			'name'	=> 'Chinese',
+			'slug'	=> 'zh-CN',
+		),
+	);
+
+	foreach ( $taxs as $tax_key => $tax ) {
+		wp_insert_term(
+			$tax['name'],
+			'post_language',
+			array(
+				'description'	=> '',
+				'slug'			=> $tax['slug'],
+			)
+		);
+		unset( $tax );
+	}
+}
+
+/**
+ * register taxonomy post language
+ */
+function create_post_language_taxonomy() {
+	register_taxonomy( 
+		'post_language', 
+		'languages', 
+		array(
+			'label' => __( 'Post Language' ),
+			'rewrite' => array( 'slug' => 'product_style' ),
+			'hierarchical' => true,
+		) 
+	);
+
+	if( !term_exists( 'post_language', '' )) {
+		insert_post_language_taxonomy();
+	}
+}
+add_action( 'init', 'create_post_language_taxonomy', 0 );
+
+/***********************************************************************************************************
+ * Registers a new post type profile
+ * @uses $wp_post_types Inserts new post type object into the list
+ *
+ * @param string  Post type key, must not exceed 20 characters
+ * @param array|string See optional args description above.
+ *
+ * @return object|WP_Error the registered post type object, or an error object
+ ***********************************************************************************************************/
+function fre_register_profile_child() {
+	$labels = array(
+		'name'               => __( 'Profiles', ET_DOMAIN ),
+		'singular_name'      => __( 'Profile', ET_DOMAIN ),
+		'add_new'            => _x( 'Add New profile', ET_DOMAIN, ET_DOMAIN ),
+		'add_new_item'       => __( 'Add New profile', ET_DOMAIN ),
+		'edit_item'          => __( 'Edit profile', ET_DOMAIN ),
+		'new_item'           => __( 'New profile', ET_DOMAIN ),
+		'view_item'          => __( 'View profile', ET_DOMAIN ),
+		'search_items'       => __( 'Search Profiles', ET_DOMAIN ),
+		'not_found'          => __( 'No Profiles found', ET_DOMAIN ),
+		'not_found_in_trash' => __( 'No Profiles found in Trash', ET_DOMAIN ),
+		'parent_item_colon'  => __( 'Parent profile:', ET_DOMAIN ),
+		'menu_name'          => __( 'Profiles', ET_DOMAIN ),
+	);
+	$args = array(
+		'labels'            => $labels,
+		'hierarchical'      => true,
+		'public'            => true,
+		'show_ui'           => true,
+		'show_in_menu'      => true,
+		'show_in_admin_bar' => true,
+		'menu_position'     => 6,
+		'show_in_nav_menus'   => true,
+		'publicly_queryable'  => true,
+		'exclude_from_search' => false,
+		'has_archive'         => ae_get_option( 'fre_profile_archive', 'profiles' ),
+		'query_var'           => true,
+		'can_export'          => true,
+		'rewrite'             => true, //array('slug' => ae_get_option('fre_profile_slug', '')),
+		'capability_type'     => 'post',
+		'supports'            => array(
+			'title',
+			'editor',
+			'author',
+			'thumbnail',
+			'excerpt',
+			'custom-fields',
+			'trackbacks',
+			'comments',
+			'revisions',
+			'page-attributes',
+			'post-formats'
+		)
+	);
+	register_post_type( PROFILE, $args );
+	$labels = array(
+		'name'                  => _x( 'Countries', 'Taxonomy plural name', ET_DOMAIN ),
+		'singular_name'         => _x( 'Country', 'Taxonomy singular name', ET_DOMAIN ),
+		'search_items'          => __( 'Search countries', ET_DOMAIN ),
+		'popular_items'         => __( 'Popular countries', ET_DOMAIN ),
+		'all_items'             => __( 'All countries', ET_DOMAIN ),
+		'parent_item'           => __( 'Parent country', ET_DOMAIN ),
+		'parent_item_colon'     => __( 'Parent country', ET_DOMAIN ),
+		'edit_item'             => __( 'Edit country', ET_DOMAIN ),
+		'update_item'           => __( 'Update country ', ET_DOMAIN ),
+		'add_new_item'          => __( 'Add New country ', ET_DOMAIN ),
+		'new_item_name'         => __( 'New country Name', ET_DOMAIN ),
+		'add_or_remove_items'   => __( 'Add or remove country', ET_DOMAIN ),
+		'choose_from_most_used' => __( 'Choose from most used enginetheme', ET_DOMAIN ),
+		'menu_name'             => __( 'Countries', ET_DOMAIN ),
+	);
+	$args = array(
+		'labels'            => $labels,
+		'public'            => true,
+		'show_in_nav_menus' => true,
+		'show_admin_column' => true,
+		'hierarchical'      => true,
+		'show_tagcloud'     => true,
+		'show_ui'           => true,
+		'query_var'         => true,
+		'rewrite'           => array(
+			'slug' => ae_get_option( 'country_slug', 'country' )
+		),
+		'query_var'         => true,
+		'capabilities'      => array(
+			'manage_terms',
+			'edit_terms',
+			'delete_terms',
+			'assign_terms'
+		)
+	);
+	register_taxonomy( 'country', array( PROFILE, PROJECT ), $args );
+	global $ae_post_factory;
+	$ae_post_factory->set( PROFILE, new AE_Posts( PROFILE, array( 'project_category', 'skill', 'country' ), array(
+		'et_professional_title',
+		'rating_score',
+		'hour_rate',
+		'et_experience',
+		'et_receive_mail',
+		'currency',
+		'languages' // yiping added - for retrieving this parameter
+	) ) );
+}
+
+add_action( 'init', 'fre_register_profile_child', 25);
+
+/**********************************************************************************************************
+ * function to save all profile data to the databases including 'bulletin posts'
+ **********************************************************************************************************/
 function child_theme_class() {
 	class Modified_Fre_ProfileAction extends AE_PostAction {
 		function __construct( $post_type = 'fre_profile' ) {
@@ -591,7 +752,7 @@ function child_theme_class() {
 					if ( $profile_post && $profile_post->post_status != 'draft' ) {
 						wp_send_json( array(
 								'success' => false,
-								'msg'     => __( "You only can have on profile.", ET_DOMAIN )
+								'msg'     => __( "You only can have one profile.", ET_DOMAIN )
 							)
 						);
 					}
@@ -624,6 +785,11 @@ function child_theme_class() {
 				}
 				$user_available = get_user_meta( $user_ID, 'user_available', true );
 				update_post_meta( $result->ID, 'user_available', $user_available );
+				// get profile languages - yiping
+				if ( isset( $request['languages']) && ! empty( $request['languages']) && is_array( $request['languages'])) {
+					$languages = $request['languages'];
+					update_post_meta( $result->ID, 'languages', $languages );
+				}
 				// action create profile
 				if ( $request['method'] == 'create' ) {
 					//update_post_meta( $result->ID,'hour_rate', 0);//@author: danng  fix query meta in page profiles search in version 1.8.4
@@ -732,73 +898,17 @@ function child_theme_class() {
 
 	new Modified_Fre_ProfileAction();
 }
-
 add_action( 'after_setup_theme', 'child_theme_class' );
-
-// insert taxonomy post language
-function insert_post_language_taxonomy() {
-	$taxs = array (
-		'0' => array(
-			'name'	=> 'English',
-			'slug'	=> 'en',
-		),
-		'1' => array(
-			'name'	=> 'Korean',
-			'slug'	=> 'ko',
-		),
-		'2' => array(
-			'name'	=> 'Chinese',
-			'slug'	=> 'zh-CN',
-		),
-	);
-
-	foreach ( $taxs as $tax_key => $tax ) {
-		wp_insert_term(
-			$tax['name'],
-			'post_language',
-			array(
-				'description'	=> '',
-				'slug'			=> $tax['slug'],
-			)
-		);
-		unset( $tax );
-	}
-}
-
-/**
- * register taxonomy post language
- */
-function create_post_language_taxonomy() {
-	register_taxonomy( 
-		'post_language', 
-		'languages', 
-		array(
-			'label' => __( 'Post Language' ),
-			'rewrite' => array( 'slug' => 'product_style' ),
-			'hierarchical' => true,
-		) 
-	);
-
-	if( !term_exists( 'post_language', '' )) {
-		insert_post_language_taxonomy();
-	}
-}
-add_action( 'init', 'create_post_language_taxonomy', 0 );
-
-// get environment language of the system
-function get_env_language() {
-	return strval(substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2));
-}
 
 /*************************************
  * function to display bulletin posts 
  * (used by home-list-bulletins.php and page-list-bulletins.php)
  */
 function list_bulletins( $type ) {
-	/*global $wpdb;
+	global $wpdb;
 	$bulletins = $wpdb->get_results( "SELECT * FROM " . $wpdb->postmeta . " WHERE meta_key = 'bulletin' ORDER BY meta_id DESC LIMIT 4" );
-	*/$env_language = get_env_language();
-	/*if ( !empty( $bulletins ) ) {
+	$env_language = get_env_language();
+	if ( !empty( $bulletins ) ) {
 		$i = 1;
 		foreach ($bulletins as $k => $bulletin) {
 			if ( !empty( $bulletin->meta_value ) && is_serialized($bulletin->meta_value)) {
@@ -841,20 +951,5 @@ function list_bulletins( $type ) {
 			}
 			$i++;
 		}
-	}*/
+	}
 }
-
-/**
- * Registers a new post type Bulletin
- * @uses $wp_post_types Inserts new post type object into the list
- *
- * @param string  Post type key, must not exceed 20 characters
- * @param array|string See optional args description above.
- *
- * @return object|WP_Error the registered post type object, or an error object
- */
-function fre_register_bulletin() {
-
-}
-
-add_action( 'init', 'fre_register_bulletin', 1 );
