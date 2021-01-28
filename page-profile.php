@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Member Profile Page
+ * Template Name: Member Profile Page Child
  * The template for displaying all pages
  *
  * This is the template that displays all pages by default.
@@ -27,6 +27,7 @@ if ( $profile_id ) {
 	if ( $profile_post && ! is_wp_error( $profile_post ) ) {
 		$profile = $post_object->convert( $profile_post );
 	}
+	//$nations = $wpdb->get_results( "SELECT nation FROM wp_user_nationalities" );
 }
 
 //get profile skills
@@ -43,8 +44,61 @@ $display_name   = $user_data->display_name;
 $user_available = isset( $user_data->user_available ) && $user_data->user_available == "on" ? 'checked' : '';
 $country        = isset( $profile->tax_input['country'][0] ) ? $profile->tax_input['country'][0]->name : '';
 $category       = isset( $profile->tax_input['project_category'][0] ) ? $profile->tax_input['project_category'][0]->slug : '';
-$languages_selected      = isset( $profile->languages ) ? $profile->languages : '';
+/*if ( $profile_id ) {
+	$nations = $wpdb->get_results( "SELECT nation FROM wp_user_nationalities" );
+	if ( sizeof($nations) === 0 ) {
+		$nations = '';
+	}
+	var_dump(sizeof($nations));
+}*/
 
+/*$nations = array();
+if (isset($_POST) && !empty($_POST)) {
+    $nations = $_POST["nations"];*/
+
+    /**
+	* Encoding the nations selected
+	* 000 - first digit stands for China     0 for not selected 1 for selected
+	*	    second digit stands for Korea
+	*       third digit stands for usa
+    */
+
+    /*$nation_code = '';
+    if ( empty($nations) )
+    	$nation_code = '000';
+    else if (sizeof($nations) == 1) {
+    	if ($nations[0] == 'china')
+    		$nation_code = '100';
+    	else if ($nations[0] == 'korea')
+    		$nation_code = '010';
+    	else if ($nations[0] == 'usa')
+    		$nation_code = '001';
+    } else if (sizeof($nations) == 2) {
+    	if ($nations[0] == 'china' && $nations[1] == 'korea')
+    		$nation_code = '110';
+    	if ($nations[0] == 'china' && $nations[1] == 'usa')
+    		$nation_code = '101';
+    	if ($nations[0] == 'korea' && $nations[1] == 'usa')
+    		$nation_code = '011';
+    } else if (sizeof($nations) == 3) {
+    	$nation_code = '111';
+    }
+
+    $check_user_exist = $wpdb->get_var("SELECT count(*) FROM {$wpdb->prefix}user_nationalities WHERE user_ID = $user_ID");
+
+    if ($check_user_exist === 0) {
+    	$sql = "INSERT INTO {$wpdb->prefix}user_nationalities (user_ID, nation) VALUES (%d, %s)";
+    	$sql = $wpdb->prepare($sql, $user_ID, $nation_code);
+    	
+    }
+    else {
+    	$sql = "UPDATE {$wpdb->prefix}user_nationalities SET nation = %s WHERE user_ID = %d";
+    	$sql = $wpdb->prepare($sql, $nation_code, $user_ID);
+    	// var_dump($sql); // debug
+    }
+    $wpdb->query($sql);
+}
+//error_log(ob_get_clean());*/
 
 get_header();
 // Handle email change requests
@@ -249,59 +303,14 @@ $currency = ae_get_option( 'currency', array(
 											array(
 												'attr'            => 'data-chosen-width="100%" data-validate_filed = "' . $validate_country . '" data-chosen-disable-search="" data-placeholder="' . __( "Choose country", ET_DOMAIN ) . '"',
 												'class'           => 'fre-chosen-single',
-                                                'orderby'         => 'ID',
-                                                'hide_empty'      => 0,
+												'hide_empty'      => 0,
 												'hierarchical'    => false,
 												'id'              => 'country',
 												'selected'        => $country_arr,
-												'show_option_all' => __( "Select state or country if outside US", ET_DOMAIN ),
+												'show_option_all' => __( "Select country", ET_DOMAIN ),
 											)
 										);
 										?>
-                                    </div>
-
-                                    <div class="fre-input-field">
-										<?php
-										$results = $wpdb->get_results( "SELECT term_id FROM " . $wpdb->term_taxonomy . " WHERE taxonomy = 'languages'" );
-
-										$i = 0;
-										foreach ($results as $language_term_id) {
-											$language_arr[$i] = $wpdb->get_var( "SELECT name FROM " . $wpdb->terms . " WHERE term_id = " . $language_term_id->term_id );
-											$i++;
-										}
-
-										$validate_language = 0;
-										if ( fre_share_role() || $user_role == FREELANCER ) {
-											$validate_language = 1;
-										}
-
-                                        // only display language dropdown for lawyers (not clients)
-                                        if ( fre_share_role() || $user_role == FREELANCER ) {
-										?>
-
-                                        <select name='languages' class='multi-select-dropdown' data-validate_filed = '<?php echo $validate_language ?>' multiple='multiple'>
-												<?php
-                                                echo ("<option value='' disabled>Choose Languages You Speak</option>");
-                                                $isSelected = false;
-        										foreach($language_arr as $language){
-                                                    if ( !empty($languages_selected) ) {
-                                                        foreach($languages_selected as $selected) {
-                                                            if ($selected === strtolower($language)) {
-                                                                $isSelected = true;
-                                                                echo ("<option value='" . strtolower($language) ."' selected>$language</option>");
-                                                                break;
-                                                            }
-                                                        }
-                                                    }
-                                                    if ( !$isSelected )
-                                                        echo ("<option value='" . strtolower($language) . "'>$language</option>");
-                                                    $isSelected = false;
-                                                }
-        										?>
-        								</select>
-
-                                        <?php } ?>
-
                                     </div>
 
 									<?php if ( fre_share_role() || $user_role == FREELANCER ) { ?>
